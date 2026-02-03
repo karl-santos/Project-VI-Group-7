@@ -1,2 +1,32 @@
-﻿body {
+﻿
+    .games-grid
+
+{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); 
+    gap: 20px; 
 }
+
+.game-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+leaderTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+

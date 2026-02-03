@@ -1,0 +1,42 @@
+﻿@page
+@model Speedrun.Pages.GamesModel
+@{
+    Layout = "_Layout";          
+    ViewData["Title"] = "Games"; 
+}
+
+<h1>Games Page</h1>
+
+
+        <script>
+            $.ajax({
+                url: "/api/Game",
+                method: "GET",
+                success: function (data) {
+                    const grid = $("#gamesGrid");
+                    grid.empty();
+                    data.forEach(function (game) {
+                        grid.append(`
+                <a href = "Leaderboard?gameId=${game.id}" style="text-decoration: none;">
+                        <div class="game-card">
+                            <h3>${game.name}</h3>
+                            <p>${game.description}</p>
+                            <p>Year: ${game.releaseYear}</p>
+                        </div> </a>
+                      `);
+
+                    })
+                },
+                        error: function (err) {
+                            console.error("Error:", err);
+                        }
+                });
+
+        </script>
+
+
+
+
+    
+        <div id="gamesGrid" class="games-grid"></div>
+    

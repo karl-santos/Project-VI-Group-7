@@ -1,0 +1,56 @@
+﻿@page
+@model Speedrun.Pages.LeaderboardModel
+@{
+    Layout = "_Layout";          
+    ViewData["Title"] = "Leaderboard"; 
+}
+
+<h1>Leaderboard</h1>
+
+
+        <script>
+            var gameId = "@Model._gameId";
+            $.ajax({
+                url: `/api/Leaderboard?gameId=${gameId}`,
+                method: "GET",
+                success: function (data) {
+                const tbody = $("#leaderboardTable tbody");
+        tbody.empty();
+
+        data.forEach(function(run) {
+            tbody.append(`
+                <tr>
+                    <td>${run.playerName}</td>
+                    <td>${run.time}</td>
+                    <td>${run.date}</td>
+                    <td>${run.category}</td>
+                </tr>
+            `);
+        });
+    },
+                        error: function (err) {
+                            console.error("Error:", err);
+                        }
+                });
+
+        </script>
+
+
+
+
+
+<table id="leaderboardTable" class="leaderTable">
+
+    <thead>
+        <tr>
+            <th>Player Name</th>
+            <th>Time</th>
+            <th>Date</th>
+            <th>Category</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+        </table>
+    
