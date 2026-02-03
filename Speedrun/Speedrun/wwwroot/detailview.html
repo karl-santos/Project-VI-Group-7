@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Run Details</title>
+
+    <link rel="stylesheet" href="/css/styles.css" />
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+
+<body>
+    <h1>Run Details</h1>
+
+    <div id="notFound" style="display:none;">
+        <p>Run not found (or missing gameId/runId in URL).</p>
+        <a class="btn ghost" href="/games.html">Back</a>
+    </div>
+
+    <div id="content" style="display:none;">
+        <form id="runForm" class="details-form">
+            <div class="field">
+                <label>Game Id</label>
+                <input id="gameId" class="big-input" readonly />
+            </div>
+
+            <div class="field">
+                <label>Run Id</label>
+                <input id="runId" class="big-input" readonly />
+            </div>
+
+            <div class="field">
+                <label>Player Name</label>
+                <input id="playerName" class="big-input" />
+            </div>
+
+            <div class="field">
+                <label>Category</label>
+                <input id="category" class="big-input" />
+            </div>
+
+            <div class="field">
+                <label>Time (hh:mm:ss)</label>
+                <input id="time" class="big-input" placeholder="00:06:28" />
+                <small class="hint">Example: 00:34:12</small>
+            </div>
+
+            <div class="field">
+                <label>Date</label>
+                <input id="date" type="date" class="big-input" />
+            </div>
+
+            <div class="field">
+                <label>Video URL</label>
+                <input id="videoUrl" class="big-input" />
+            </div>
+
+            <div id="error" class="error" style="display:none;"></div>
+
+            <div class="actions">
+                <button type="submit" class="btn">Update</button>
+                <button type="button" id="deleteBtn" class="btn danger">Delete</button>
+                <a id="backLink" class="btn ghost" href="#">Back</a>
+            </div>
+        </form>
+
+        <hr />
+
+        <h2>Comments</h2>
+
+        <form id="commentForm" class="comment-form">
+            <div class="field">
+                <label>Username</label>
+                <input id="username" class="big-input" placeholder="Your name" />
+            </div>
+
+            <div class="field">
+                <label>How did you feel about this run?</label>
+                <textarea id="commentContent" class="comment-input" placeholder="Write your comment..."></textarea>
+            </div>
+
+            <button type="submit" class="btn">Post Comment</button>
+        </form>
+
+        <div id="commentList" class="comment-list"></div>
+    </div>
+
+    <script src="/js/run-details.js"></script>
+</body>
+
+</html>
