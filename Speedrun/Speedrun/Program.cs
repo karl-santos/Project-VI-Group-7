@@ -13,13 +13,9 @@ builder.Services.AddSwaggerGen();
 
 
 
-
-
-
-
-
-
 builder.Services.AddSingleton<IGameService, GameService>();
+builder.Services.AddSingleton<IRunService, RunService>();
+builder.Services.AddSingleton<ICommentService, CommentService>();
 
 
 var app = builder.Build();
