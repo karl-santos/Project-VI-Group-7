@@ -7,7 +7,22 @@ namespace Speedrun.Services
     // Handles all business logic for run submissions
     public class RunService : IRunService
     {
-        private static List<Run> _runs = new();  // Static list maintains run data across requests
+
+        private static List<Run> _runs = new() // Static list maintains run data across requests
+        {
+
+            new Run()
+            {
+                Category = "cat",
+                Comments = new List<Comment>(),
+                PlayerName = "Albert",
+                SubmittedAt = DateTime.Now,
+                Time = new TimeSpan(2, 30, 0),
+                Id = 5,
+                GameId = 1
+
+            }
+        };
         private static int _nextId = 1; // Auto-incrementing ID generator
 
 
