@@ -31,6 +31,28 @@ namespace Speedrun.Controllers
             return Ok(runs);
         }
 
+
+        // GET: api/games/1/runs/1
+        [HttpGet("{runId}")]
+        public IActionResult GetRun(int gameId, int runId)
+        {
+            var game = _gameService.GetGameById(gameId);
+            if (game == null)
+                return NotFound(new { message = "Game not found" });
+
+            var run = _runService.GetRunById(runId);
+            if (run == null)
+                return NotFound(new { message = "Run not found" });
+            
+            // verify the run actually belongs to this game
+            if (run.GameId != gameId)
+                return NotFound(new { message = "Run not found for this game" });
+
+            return Ok(run);
+        }
+
+
+
         // POST: api/games/1/runs
         [HttpPost]
         public IActionResult CreateRun(int gameId, [FromBody] CreateRunRequest request)
