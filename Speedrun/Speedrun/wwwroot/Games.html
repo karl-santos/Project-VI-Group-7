@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Games</title>
+    <link rel="stylesheet" href="/css/styles.css?v=1" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    
+
+    <h1>Games Page</h1>
+
+
+    <script>$.ajax({
+                url: "/api/games",
+                method: "GET",
+                success: function (data) {
+                    const grid = $("#gamesGrid");
+                    grid.empty();
+                    data.forEach(function (game) {
+                        grid.append(`
+                <a href = "Leaderboard.html?gameId=${game.id}" style="text-decoration: none;">
+                        <div class="game-card">
+                            <h3>${game.name}</h3>
+                            <img src = "${game.gameImageUrl}" class = "gameImg"/>
+                        
+                        </div> </a>
+                      `);
+
+                    })
+                },
+                        error: function (err) {
+                            console.error("Error:", err);
+                        }
+                });</script>
+
+
+
+
+
+    <div id="gamesGrid" class="games-grid"></div>
+
+</body>
+</html>

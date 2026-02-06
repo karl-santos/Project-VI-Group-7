@@ -1,4 +1,7 @@
-﻿
+﻿body {
+    background-color: black;
+    color: white;
+}
     .games-grid
 
 {
@@ -12,6 +15,8 @@
     padding: 10px;
     border-radius: 5px;
     text-align: center;
+    background: #333333;
+    color: white;
 }
 
 leaderTable {
@@ -26,7 +31,19 @@ th, td {
 }
 
 th {
-    background-color: #f2f2f2;
+    background-color: darkcyan;
 }
 
+.gameImg {
+    max-height: 200px;
+    max-width: 200px;
+    height: auto;
+    width: auto;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1; 
+    cursor: pointer; 
+    transition: background 0.3s; 
+}
 

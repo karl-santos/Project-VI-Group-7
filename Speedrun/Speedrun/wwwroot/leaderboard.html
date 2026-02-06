@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" href="/css/styles.css?v=1" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <h1>Leaderboard</h1>
+
+    <script>
+
+        function showRun(runId) {
+            window.location = `detailview.html?runId=${runId}`;
+        }
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const gameId = urlParams.get('gameId'); 
+
+    $.ajax({
+    url: `api/games/${gameId}/runs`,
+    method: "GET",
+    success: function (data) {
+    const tbody = $("#leaderboardTable tbody");
+    tbody.empty();
+
+    data.forEach(function(run) {
+    tbody.append(`
+    <tr onclick = "showRun(${run.id})">
+        <td>${run.playerName}</td>
+        <td>${run.time}</td>
+        <td>${run.submittedAt}</td>
+        <td>${run.category}</td>
+    </tr>
+    `);
+    });
+    },
+    error: function (err) {
+    console.error("Error:", err);
+    }
+    });</script>
+
+
+
+
+    <input type="button" onclick="window.location ='addNew.html'" value="Submit Run" />
+    <table id="leaderboardTable" class="leaderTable">
+
+        <thead>
+            <tr>
+                <th>Player Name</th>
+                <th>Time</th>
+                <th>Date</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+</body>
+</html>
