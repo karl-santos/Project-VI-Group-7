@@ -1,0 +1,69 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Submit Speedrun</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+    <main style="max-width:720px;margin:2rem auto;font-family:Arial,Helvetica,sans-serif;">
+        <h1>Submit a Speedrun</h1>
+
+        <form id="runForm">
+            <label>Game ID (number)<br /><input type="number" name="gameId" id="gameId" required></label><br /><br />
+            <label>Runner name<br /><input type="text" name="runnerName" id="runnerName" required></label><br /><br />
+            <label>Category<br /><input type="text" name="category" id="category" required></label><br /><br />
+            <label>Run time (free text, e.g. "0m 34s 321ms" or "00:12:34.321")<br /><input type="text" name="runTime" id="runTime"></label><br /><br />
+            <label>Run date (YYYY-MM-DD)<br /><input type="date" name="runDate" id="runDate"></label><br /><br />
+            <label>Game version<br /><input type="text" name="gameVersion" id="gameVersion"></label><br /><br />
+
+            <button type="submit">Submit run</button>
+        </form>
+
+        <div id="result" style="margin-top:1rem;"></div>
+    </main>
+
+    <script>
+    document.getElementById('runForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const dto = {
+        gameId: parseInt(document.getElementById('gameId').value, 10),
+        runnerName: document.getElementById('runnerName').value.trim(),
+        runCategory: document.getElementById('category').value.trim(),
+        runTime: document.getElementById('runTime').value.trim(),
+        runDate: document.getElementById('runDate').value || new Date().toISOString().slice(0,10),
+        gameVersion: document.getElementById('gameVersion').value.trim()
+      };
+
+      document.getElementById('result').textContent = 'Submitting...';
+
+      try {
+        const r = await fetch('/api/RunSubmission', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            gameId: dto.gameId,
+            RunnerName: dto.runnerName,
+            RunCategory: dto.runCategory,
+            RunTime: dto.runTime,
+            RunDate: dto.runDate,
+            GameVersion: dto.gameVersion
+          })
+        });
+
+        const body = await r.json().catch(()=>({}));
+
+        if (r.status === 201 || r.ok) {
+          document.getElementById('result').innerHTML = '<strong>Saved!</strong> Run ID: ' + (body.runId || body.RunID || 'unknown');
+          document.getElementById('runForm').reset();
+        } else {
+          document.getElementById('result').innerHTML = '<strong>Error</strong>: ' + (body.message || JSON.stringify(body));
+        }
+      } catch (err) {
+        document.getElementById('result').textContent = 'Network or server error: ' + err;
+      }
+    });
+    </script>
+</body>
+</html>

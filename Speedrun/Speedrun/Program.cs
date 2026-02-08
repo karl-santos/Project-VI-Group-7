@@ -2,8 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Speedrun.Models;
 using Speedrun.Services;
+using SQLitePCL;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Batteries.Init();
 
 // Add services to the container.
 builder.Services.AddControllers();
