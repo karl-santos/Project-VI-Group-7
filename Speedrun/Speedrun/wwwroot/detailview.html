@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <title>Run Details</title>
 
-    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/styles.css?v=1" />
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
@@ -15,7 +15,7 @@
 
     <div id="notFound" style="display:none;">
         <p>Run not found (or missing gameId/runId in URL).</p>
-        <a class="btn ghost" href="/games.html">Back</a>
+        <a class="btn ghost" href="/games.html">Back to games</a>
     </div>
 
     <div id="content" style="display:none;">
@@ -32,28 +32,34 @@
 
             <div class="field">
                 <label>Player Name</label>
-                <input id="playerName" class="big-input" />
+                <input id="playerName" class="big-input" readonly />
             </div>
 
             <div class="field">
                 <label>Category</label>
-                <input id="category" class="big-input" />
+                <input id="category" class="big-input" readonly />
             </div>
 
             <div class="field">
                 <label>Time (hh:mm:ss)</label>
-                <input id="time" class="big-input" placeholder="00:06:28" />
-                <small class="hint">Example: 00:34:12</small>
+                <input id="time" class="big-input" placeholder="01:11:11" />
+                <small class="hint">Example: 04:04:04</small>
             </div>
 
             <div class="field">
-                <label>Date</label>
-                <input id="date" type="date" class="big-input" />
+                <label>Submitted Art</label>
+                <input id="submittedAt" class="big-input" readonly />
             </div>
 
             <div class="field">
                 <label>Video URL</label>
-                <input id="videoUrl" class="big-input" />
+                <input id="videoUrl" class="big-input" placeholder="https://...." />
+                <a id="videoLink" target="_blank" class="hint" style="display:none;">Open video</a>
+            </div>
+
+            <div class="field">
+                <label>Notes</label>
+                <textarea id="notes" class="comment-input" placeholder="Notes...."></textarea>
             </div>
 
             <div id="error" class="error" style="display:none;"></div>
@@ -77,7 +83,7 @@
 
             <div class="field">
                 <label>How did you feel about this run?</label>
-                <textarea id="commentContent" class="comment-input" placeholder="Write your comment..."></textarea>
+                <textarea id="commentContent" class="comment-input" placeholder="Write your comment...."></textarea>
             </div>
 
             <button type="submit" class="btn">Post Comment</button>
@@ -86,7 +92,7 @@
         <div id="commentList" class="comment-list"></div>
     </div>
 
-    <script src="/js/run-details.js"></script>
+    <script src="/js/detailview.js"></script>
 </body>
 
 </html>
