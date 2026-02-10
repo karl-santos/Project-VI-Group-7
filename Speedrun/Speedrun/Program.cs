@@ -44,6 +44,17 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 
+// create database on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<SpeedrunDbContext>();
+    db.Database.EnsureCreated(); // checks if the database exists, if not it creates it
+}
+
+
+
+
+
 app.UseDefaultFiles();  // Serves index.html automatically
 app.UseStaticFiles();   // Serves files from wwwroot
 
