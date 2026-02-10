@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Speedrun.Data;
 using Speedrun.Models;
 using Speedrun.Services;
 using SQLitePCL;
@@ -10,15 +12,20 @@ Batteries.Init();
 
 // Add services to the container.
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
 
-builder.Services.AddSingleton<IGameService, GameService>();
-builder.Services.AddSingleton<IRunService, RunService>();
-builder.Services.AddSingleton<ICommentService, CommentService>();
+// Tell the app to use SQLite as the database
+builder.Services.AddDbContext<SpeedrunDbContext>(options =>
+    options.UseSqlite("Data Source=speedrun.db"));
+
+
+// Register services
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IRunService, RunService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 
 
 
@@ -41,22 +48,16 @@ app.UseDefaultFiles();  // Serves index.html automatically
 app.UseStaticFiles();   // Serves files from wwwroot
 
 
-// Configure the HTTP request pipeline.
+// Enable Swagger in development
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-
-
 app.UseCors("AllowAll");
-
 app.UseHttpsRedirection();
-
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
