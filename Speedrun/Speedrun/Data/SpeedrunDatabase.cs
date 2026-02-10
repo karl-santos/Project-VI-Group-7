@@ -1,101 +1,74 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.Sqlite;
-using Speedrun.Controllers;
-using System.IO;
+﻿using Microsoft.EntityFrameworkCore;
 using Speedrun.Models;
-using Speedrun.Services;
-using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Reflection.Emit;
 
 namespace Speedrun.Data
 {
-    public class SpeedrunDatabase : ControllerBase
+    /// <summary>
+    /// Database context for the Speedrun application
+    /// Manages the connection to SQLite and defines tables
+    /// </summary>
+    public class SpeedrunDbContext : DbContext
     {
-        private readonly string _dbPath;
-
-        [HttpPost]
-
-        public IActionResult Addrun([FromBody] NewRunDto dto)
+        public SpeedrunDbContext(DbContextOptions<SpeedrunDbContext> options)
+            : base(options)
         {
-            if (dto == null)
-                return BadRequest(new { message = "Request body required" });
-
-            if (string.IsNullOrWhiteSpace(_dbPath) || !System.IO.File.Exists(_dbPath))
-            {
-                //ILogger.LogError("Database file not found. Looked for: {path}", _dbPath);
-                return StatusCode(500, new { message = "Database file not found on server" });
-            }
-
-            // Basic validation
-            if (dto.GameId <= 0 || string.IsNullOrWhiteSpace(dto.RunnerName) || string.IsNullOrWhiteSpace(dto.RunCategory))
-            {
-                return BadRequest(new { message = "gameId, runnerName and runCategory are required" });
-            }
-
-            try
-            {
-                using var conn = new SqliteConnection($"Data Source={_dbPath}");
-                conn.Open();
-
-                using var cmd = conn.CreateCommand();
-                cmd.CommandText = @"
-                    INSERT INTO Run (GameID, RunCategory, RunnerName, RunTime, RunDate, GameVersion)
-                    VALUES (@gameId, @runCategory, @runnerName, @runTime, @runDate, @gameVersion);
-                    SELECT last_insert_rowid();
-                ";
-                cmd.Parameters.AddWithValue("@gameId", dto.GameId);
-                cmd.Parameters.AddWithValue("@runCategory", dto.RunCategory);
-                cmd.Parameters.AddWithValue("@runnerName", dto.RunnerName);
-                cmd.Parameters.AddWithValue("@runTime", dto.RunTime ?? string.Empty);
-                cmd.Parameters.AddWithValue("@runDate", dto.RunDate ?? DateTime.UtcNow.ToString("yyyy-MM-dd"));
-                cmd.Parameters.AddWithValue("@gameVersion", dto.GameVersion ?? string.Empty);
-
-                var idObj = cmd.ExecuteScalar();
-                long newId = (idObj != null && long.TryParse(idObj.ToString(), out var lid)) ? lid : 0;
-
-                return CreatedAtAction(nameof(GetRunById), new { id = newId }, new { runId = newId });
-            }
-            catch (Exception)
-            {
-                //_logger.LogError(ex, "Error inserting run");
-                return StatusCode(500, new { message = "Error saving run" });
-            }
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetRunById(long id)
+        // Tables
+        public DbSet<Game> Games { get; set; }
+        public DbSet<Run> Runs { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+
+        /// <summary>
+        /// Configure relationships and constraints
+        /// </summary>
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            if (string.IsNullOrWhiteSpace(_dbPath) || !System.IO.File.Exists(_dbPath))
-                return NotFound();
+            // Configure Game entity
+            modelBuilder.Entity<Game>()
+                .HasKey(g => g.Id);
 
-            using var conn = new SqliteConnection($"Data Source={_dbPath}");
-            conn.Open();
-            using var cmd = conn.CreateCommand();
-            cmd.CommandText = "SELECT RunID, GameID, RunCategory, RunnerName, RunTime, RunDate, GameVersion FROM Run WHERE RunID = @id";
-            cmd.Parameters.AddWithValue("@id", id);
-            using var rdr = cmd.ExecuteReader();
-            if (!rdr.Read()) return NotFound();
+            // Configure Run entity
+            modelBuilder.Entity<Run>()
+                .HasKey(r => r.Id);
 
-            var run = new
-            {
-                RunID = rdr.GetInt64(0),
-                GameID = rdr.IsDBNull(1) ? (int?)null : rdr.GetInt32(1),
-                RunCategory = rdr.IsDBNull(2) ? null : rdr.GetString(2),
-                RunnerName = rdr.IsDBNull(3) ? null : rdr.GetString(3),
-                RunTime = rdr.IsDBNull(4) ? null : rdr.GetString(4),
-                RunDate = rdr.IsDBNull(5) ? null : rdr.GetString(5),
-                GameVersion = rdr.IsDBNull(6) ? null : rdr.GetString(6)
-            };
-            return Ok(run);
+            modelBuilder.Entity<Run>()
+                .HasOne(r => r.Game)
+                .WithMany(g => g.Runs)
+                .HasForeignKey(r => r.GameId);
+
+            // Configure Comment entity
+            modelBuilder.Entity<Comment>()
+                .HasKey(c => c.Id);
+
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.Run)
+                .WithMany(r => r.Comments)
+                .HasForeignKey(c => c.RunId);
+
+            // Seed initial data (optional)
+            modelBuilder.Entity<Game>().HasData(
+                new Game
+                {
+                    Id = 1,
+                    Name = "Super Mario 64",
+                    GameImageUrl = "https://upload.wikimedia.org/wikipedia/en/6/6a/Super_Mario_64_box_cover.jpg"
+                },
+                new Game
+                {
+                    Id = 2,
+                    Name = "Celeste",
+                    GameImageUrl = "https://upload.wikimedia.org/wikipedia/commons/0/0f/Celeste_box_art_final.png"
+                },
+                new Game
+                {
+                    Id = 3,
+                    Name = "Portal",
+                    GameImageUrl = "https://upload.wikimedia.org/wikipedia/en/6/63/Portal_PC_boxart.jpg"
+                }
+            );
         }
-    }
-
-    public class NewRunDto
-    {
-        public int GameId { get; set; }
-        public string RunCategory { get; set; } = string.Empty;
-        public string RunnerName { get; set; } = string.Empty;
-        public string? RunTime { get; set; }
-        public string? RunDate { get; set; }
-        public string? GameVersion { get; set; }
     }
 }
