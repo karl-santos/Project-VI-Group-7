@@ -6,21 +6,43 @@ namespace Speedrun.Services
     public class GameService : IGameService
     {
         private readonly SpeedrunDbContext _context;
-        public GameService(SpeedrunDbContext context)
+        private readonly ILogger<GameService> _logger;
+        public GameService(SpeedrunDbContext context, ILogger<GameService> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // Returns all games available for speedrunning
         public List<Game> GetAllGames()
         {
-            return _context.Games.ToList();
+            _logger.LogInformation($"[{GetType().Name}] Fetching all games from database");
+
+            var games = _context.Games.ToList();
+
+            _logger.LogInformation($"[{GetType().Name}] Retrieved {games.Count} games");
+
+            return games;
         }
 
         // Finds a specific game by Id. Returns null if not found
         public Game? GetGameById(int id)
         {
-            return _context.Games.FirstOrDefault(g => g.Id == id);
+            _logger.LogInformation($"[{GetType().Name}] Fetching game with ID: {id}");
+
+            var game = _context.Games.FirstOrDefault(g => g.Id == id);
+
+            if (game == null)
+            {
+                _logger.LogWarning($"[{GetType().Name}] Game with ID {id} not found");
+            }
+            else
+            {
+                _logger.LogInformation($"[{GetType().Name}] Found game: {game.Name}");
+            }
+
+            return game;
+
         }
 
     }
