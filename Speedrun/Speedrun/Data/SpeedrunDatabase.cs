@@ -1,18 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Speedrun.Models;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 
 namespace Speedrun.Data
 {
-    /// <summary>
-    /// Database context for the Speedrun application
-    /// Manages the connection to SQLite and defines tables
-    /// </summary>
+
+    // Manages the connection to SQLite and defines tables
     public class SpeedrunDbContext : DbContext
     {
         public SpeedrunDbContext(DbContextOptions<SpeedrunDbContext> options)
-            : base(options)
+            : base(options) 
         {
         }
 
@@ -21,52 +17,61 @@ namespace Speedrun.Data
         public DbSet<Run> Runs { get; set; }
         public DbSet<Comment> Comments { get; set; }
 
-        /// <summary>
-        /// Configure relationships and constraints
-        /// </summary>
+
+
+
+        // Configure relationships and constraints
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configure Game entity
             modelBuilder.Entity<Game>()
-                .HasKey(g => g.Id);
+                .HasKey(g => g.Id); 
 
             // Configure Run entity
             modelBuilder.Entity<Run>()
                 .HasKey(r => r.Id);
 
+
+            // Define relationship: One Game has many Runs
             modelBuilder.Entity<Run>()
-                .HasOne(r => r.Game)
-                .WithMany(g => g.Runs)
-                .HasForeignKey(r => r.GameId);
+                .HasOne(r => r.Game)            // each run has one game
+                .WithMany(g => g.Runs)          // each game has many runs
+                .HasForeignKey(r => r.GameId);  // gameId is the foreign key in the Runs table
+
 
             // Configure Comment entity
             modelBuilder.Entity<Comment>()
                 .HasKey(c => c.Id);
 
-            modelBuilder.Entity<Comment>()
-                .HasOne(c => c.Run)
-                .WithMany(r => r.Comments)
-                .HasForeignKey(c => c.RunId);
 
-            // Seed initial data (optional)
+
+            // Define relationship: One Run has many Comments
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.Run)             // Each Comment belongs to one Run
+                .WithMany(r => r.Comments)      // Each Run has many Comments
+                .HasForeignKey(c => c.RunId);   // RunId is the foreign key
+
+
+
+            // Seed initial data
             modelBuilder.Entity<Game>().HasData(
                 new Game
                 {
                     Id = 1,
-                    Name = "Super Mario 64",
-                    GameImageUrl = "https://upload.wikimedia.org/wikipedia/en/6/6a/Super_Mario_64_box_cover.jpg"
+                    Name = "Super Mario Galaxy",
+                    GameImageUrl = "https://upload.wikimedia.org/wikipedia/en/7/76/SuperMarioGalaxy.jpg"
                 },
                 new Game
                 {
                     Id = 2,
-                    Name = "Celeste",
-                    GameImageUrl = "https://upload.wikimedia.org/wikipedia/commons/0/0f/Celeste_box_art_final.png"
+                    Name = "NBA 2K26",
+                    GameImageUrl = "https://image.api.playstation.com/vulcan/ap/rnd/202506/2509/ec1eec85d9130210701491db769cb9874cc09f6512ebca20.png"
                 },
                 new Game
                 {
                     Id = 3,
-                    Name = "Portal",
-                    GameImageUrl = "https://upload.wikimedia.org/wikipedia/en/6/63/Portal_PC_boxart.jpg"
+                    Name = "Minecraft",
+                    GameImageUrl = "https://preview.redd.it/which-one-is-the-superior-cover-art-v0-g4urr2d8zu3d1.png?width=1080&crop=smart&auto=webp&s=4ad01254b4f3bd2f8997aad4dd47a6ee40a6e426"
                 }
             );
         }
