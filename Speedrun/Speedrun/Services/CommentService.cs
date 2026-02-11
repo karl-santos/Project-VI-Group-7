@@ -33,7 +33,7 @@ namespace Speedrun.Services
         // Creates a new comment on a run
         public Comment CreateComment(int runId, string username, string content)
         {
-            _logger.LogInformation($"[{GetType().Name}] Creating comment on run {runId} by user: {username}")
+            _logger.LogInformation($"[{GetType().Name}] Creating comment on run {runId} by user: {username}");
 
             // Create comment object in memory
             var comment = new Comment
