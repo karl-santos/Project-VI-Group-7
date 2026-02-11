@@ -40,7 +40,7 @@ namespace Speedrun.Services
             {
                 RunId = runId,
                 Username = username,
-                Content = content,
+                Content = content, 
                 CreatedAt = DateTime.UtcNow
             };
 
