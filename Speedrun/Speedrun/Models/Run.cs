@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Speedrun.Models
 {
@@ -13,7 +14,10 @@ namespace Speedrun.Models
         public string? VideoUrl { get; set; }
         public string? Notes { get; set; }
 
+        [JsonIgnore]
         public Game? Game { get; set; } // One run belongs to one game
+
+        [JsonIgnore]
         public List<Comment> Comments { get; set; } = new(); // One run has many comments
 
     }

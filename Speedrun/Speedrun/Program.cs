@@ -5,6 +5,7 @@ using Speedrun.Data;
 using Speedrun.Models;
 using Speedrun.Services;
 using SQLitePCL;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +16,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Ignore circular references when serializing to JSON
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
 
 // Tell the app to use SQLite as the database
 builder.Services.AddDbContext<SpeedrunDbContext>(options =>
