@@ -23,12 +23,24 @@ namespace Speedrun.Controllers
         [HttpGet]
         public IActionResult GetRunsByGame(int gameId)
         {
+
+            _logger.LogInformation($"[{GetType().Name}] GET /api/games/{gameId}/runs - Request received");
+
+
             var game = _gameService.GetGameById(gameId);
             if (game == null)
+            {
+                _logger.LogWarning($"[{GetType().Name}] GET /api/games/{gameId}/runs - Game not found");
                 return NotFound(new { message = "Game not found" });
+            }
 
             var runs = _runService.GetRunsByGame(gameId);
-            return Ok(runs);
+
+
+            _logger.LogInformation($"[{GetType().Name}] GET /api/games/{gameId}/runs - Returning {runs.Count} runs");
+            return Ok(runs);  
+
+
         }
 
 
@@ -57,12 +69,26 @@ namespace Speedrun.Controllers
         [HttpPost]
         public IActionResult CreateRun(int gameId, [FromBody] CreateRunRequest request)
         {
+
+            _logger.LogInformation($"[{GetType().Name}] POST /api/games/{gameId}/runs - Request received for player: {request.PlayerName}");
+
+            // Validate that game exists
             var game = _gameService.GetGameById(gameId);
             if (game == null)
+            {
+                _logger.LogWarning($"[{GetType().Name}] POST /api/games/{gameId}/runs - Game not found");
                 return NotFound(new { message = "Game not found" });
+            }
 
+
+
+            // Validate required fields are present
             if (string.IsNullOrEmpty(request.PlayerName) || string.IsNullOrEmpty(request.Category))
+            {
+                _logger.LogWarning($"[{GetType().Name}] POST /api/games/{gameId}/runs - Missing required fields");
                 return BadRequest(new { message = "PlayerName and Category are required" });
+            }
+
 
             var run = _runService.CreateRun(
                 gameId,
@@ -73,6 +99,7 @@ namespace Speedrun.Controllers
                 request.Notes
             );
 
+            _logger.LogInformation($"[{GetType().Name}] POST /api/games/{gameId}/runs - Run created with ID: {run.Id}");
             return CreatedAtAction(nameof(GetRunsByGame), new { gameId }, run);
         }
 
@@ -80,33 +107,72 @@ namespace Speedrun.Controllers
         [HttpPatch("{runId}")]
         public IActionResult UpdateRunPartial(int gameId, int runId, [FromBody] UpdateRunRequest request)
         {
-            var run = _runService.UpdateRun(runId, request.Time, request.VideoUrl, request.Notes);
-            if (run == null)
-                return NotFound(new { message = "Run not found" });
+            _logger.LogInformation($"[{GetType().Name}] PATCH /api/games/{gameId}/runs/{runId} - Request received");
 
-            return Ok(run);
+            // Log incoming update request
+            _logger.LogInformation($"[{GetType().Name}] PATCH /api/games/{gameId}/runs/{runId} - Request received");
+
+            // Update the run (only provided fields)
+            var run = _runService.UpdateRun(runId, request.Time, request.VideoUrl, request.Notes);
+
+            // If run not found, return 404
+            if (run == null)
+            {
+                _logger.LogWarning($"[{GetType().Name}] PATCH /api/games/{gameId}/runs/{runId} - Run not found");
+                return NotFound(new { message = "Run not found" });
+            }
+
+            // Log successful update
+            _logger.LogInformation($"[{GetType().Name}] PATCH /api/games/{gameId}/runs/{runId} - Run updated successfully");
+            return Ok(run);  // 200 OK with updated run
         }
+
+
+
+
 
         // PUT: api/games/1/runs/5
         [HttpPut("{runId}")]
         public IActionResult UpdateRunFull(int gameId, int runId, [FromBody] Run run)
         {
-            var updated = _runService.ReplaceRun(runId, run);
-            if (updated == null)
-                return NotFound(new { message = "Run not found" });
+            _logger.LogInformation($"[{GetType().Name}] PUT /api/games/{gameId}/runs/{runId} - Request received");
 
-            return Ok(updated);
+            // Replace the entire run
+            var updated = _runService.ReplaceRun(runId, run);
+
+            // If run not found, return 404
+            if (updated == null)
+            {
+                _logger.LogWarning($"[{GetType().Name}] PUT /api/games/{gameId}/runs/{runId} - Run not found");
+                return NotFound(new { message = "Run not found" });
+            }
+
+            _logger.LogInformation($"[{GetType().Name}] PUT /api/games/{gameId}/runs/{runId} - Run replaced successfully");
+            return Ok(updated);  // 200 OK with updated run
         }
+
+
+
 
         // DELETE: api/games/1/runs/5
         [HttpDelete("{runId}")]
         public IActionResult DeleteRun(int gameId, int runId)
         {
-            var deleted = _runService.DeleteRun(runId);
-            if (!deleted)
-                return NotFound(new { message = "Run not found" });
+            _logger.LogInformation($"[{GetType().Name}] DELETE /api/games/{gameId}/runs/{runId} - Request received");
 
-            return NoContent();
+            // Delete the run
+            var deleted = _runService.DeleteRun(runId);
+
+            // If run not found, return 404
+            if (!deleted)
+            {
+                _logger.LogWarning($"[{GetType().Name}] DELETE /api/games/{gameId}/runs/{runId} - Run not found");
+                return NotFound(new { message = "Run not found" });
+            }
+
+            _logger.LogInformation($"[{GetType().Name}] DELETE /api/games/{gameId}/runs/{runId} - Run deleted successfully");
+            return NoContent();  // 204 No Content
+
         }
     }
 

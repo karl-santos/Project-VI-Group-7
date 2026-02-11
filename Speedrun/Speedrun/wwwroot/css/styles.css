@@ -2,12 +2,11 @@
     background-color: black;
     color: white;
 }
-    .games-grid
 
-{
+.games-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); 
-    gap: 20px; 
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
 }
 
 .game-card {
@@ -24,7 +23,8 @@ leaderTable {
     border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
     border: 1px solid #ccc;
     padding: 8px;
     text-align: left;
@@ -42,8 +42,87 @@ th {
 }
 
 tbody tr:hover {
-    background-color: #f1f1f1; 
-    cursor: pointer; 
-    transition: background 0.3s; 
+    background-color: #f1f1f1;
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
+.details-form {
+    max-width: 700px;
+}
+
+.field {
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.big-input,
+.comment-input {
+    padding: 10px;
+    border: 1px solid #666;
+    border-radius: 6px;
+    background: #222;
+    color: white;
+}
+
+.comment-input {
+    min-height: 70px;
+}
+
+.hint {
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #888;
+    background: #111;
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn.danger {
+    border-color: #b00020;
+    color: #ff6b6b;
+}
+
+.btn.ghost {
+    background: transparent;
+}
+
+.error {
+    color: #ff6b6b;
+    margin: 10px 0;
+}
+
+.comment-list {
+    margin-top: 12px;
+    display: grid;
+    gap: 10px;
+}
+
+.comment-card {
+    border: 1px solid #555;
+    border-radius: 8px;
+    padding: 10px;
+    background: #111;
+}
+
+.comment-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+}
