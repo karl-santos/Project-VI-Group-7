@@ -1,4 +1,6 @@
-﻿namespace Speedrun.Models
+﻿using System.Text.Json.Serialization;
+
+namespace Speedrun.Models
 {
     public class Comment
     {
@@ -8,6 +10,7 @@
         public string Content { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        [JsonIgnore]
         public Run? Run { get; set; }
     }
 }

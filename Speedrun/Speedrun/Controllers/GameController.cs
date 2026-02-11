@@ -28,7 +28,11 @@ namespace Speedrun.Controllers
         [HttpGet]
         public IActionResult GetAllGames()
         {
+            _logger.LogInformation($"[{GetType().Name}] GET /api/games - Request received");
+
             var games = _gameService.GetAllGames();
+
+            _logger.LogInformation($"[{GetType().Name}] GET /api/games - Returning {games.Count} games");
             return Ok(games);
         }
 
@@ -36,10 +40,15 @@ namespace Speedrun.Controllers
         [HttpGet("{gameId}")]
         public IActionResult GetGameById(int gameId)
         {
+            _logger.LogInformation($"[{GetType().Name}] GET /api/games/{gameId} - Request received");
+
             var game = _gameService.GetGameById(gameId);
             if (game == null)
+            {
+                _logger.LogWarning($"[{GetType().Name}] GET /api/games/{gameId} - Game not found");
                 return NotFound(new { message = "Game not found" });
-
+            }
+            _logger.LogInformation($"[{GetType().Name}] GET /api/games/{gameId} - Returning game: {game.Name}");
             return Ok(game);
         }
 
@@ -47,6 +56,7 @@ namespace Speedrun.Controllers
         [HttpOptions]
         public IActionResult GetOptions()
         {
+            _logger.LogInformation($"[{GetType().Name}] OPTIONS /api/games - Request received");
             Response.Headers.Add("Allow", "GET, OPTIONS");
             return Ok();
         }
