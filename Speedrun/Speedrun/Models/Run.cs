@@ -10,7 +10,7 @@ namespace Speedrun.Models
         public string PlayerName { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty; // e.g., "Any%", "100%", "Glitchless"
         public TimeSpan Time { get; set; } // run duration
-        public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
+        public DateTime SubmittedAt { get; set; } = DateTime.Now;
         public string? VideoUrl { get; set; }
         public string? Notes { get; set; }
 
