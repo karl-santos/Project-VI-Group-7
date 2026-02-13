@@ -38,7 +38,7 @@ namespace Speedrun.Controllers
 
 
             _logger.LogInformation($"[{GetType().Name}] GET /api/games/{gameId}/runs - Returning {runs.Count} runs");
-            return Ok(runs);  
+            return Ok(runs);
 
 
         }
@@ -55,7 +55,7 @@ namespace Speedrun.Controllers
             var run = _runService.GetRunById(runId);
             if (run == null)
                 return NotFound(new { message = "Run not found" });
-            
+
             // verify the run actually belongs to this game
             if (run.GameId != gameId)
                 return NotFound(new { message = "Run not found for this game" });
@@ -69,6 +69,7 @@ namespace Speedrun.Controllers
         [HttpPost]
         public IActionResult CreateRun(int gameId, [FromBody] CreateRunRequest request)
         {
+
             _logger.LogInformation($"[{GetType().Name}] POST /api/games/{gameId}/runs - Request received for player: {request.PlayerName}");
 
             // Validate that game exists
@@ -79,26 +80,15 @@ namespace Speedrun.Controllers
                 return NotFound(new { message = "Game not found" });
             }
 
-            // Validate name is present
-            if (string.IsNullOrEmpty(request.PlayerName))
+
+
+            // Validate required fields are present
+            if (string.IsNullOrEmpty(request.PlayerName) || string.IsNullOrEmpty(request.Category))
             {
-                _logger.LogWarning($"[{GetType().Name}] POST /api/games/{gameId}/runs - Missing player name");
-                return BadRequest(new { message = "PlayerName is required" });
+                _logger.LogWarning($"[{GetType().Name}] POST /api/games/{gameId}/runs - Missing required fields");
+                return BadRequest(new { message = "PlayerName and Category are required" });
             }
 
-            // Validate for category
-            if (string.IsNullOrEmpty(request.Category))
-            {
-                _logger.LogWarning($"[{GetType().Name}] POST /api/games/{gameId}/runs - Missing category");
-                return BadRequest(new { message = "Category is required" });
-            }
-
-            // Validate for time
-            if (request.Time == TimeSpan.Zero)
-            {
-                _logger.LogWarning($"[{GetType().Name}] POST /api/games/{gameId}/runs - Missing time");
-                return BadRequest(new { message = "Time is required" });
-            }
 
             var run = _runService.CreateRun(
                 gameId,
@@ -110,7 +100,7 @@ namespace Speedrun.Controllers
             );
 
             _logger.LogInformation($"[{GetType().Name}] POST /api/games/{gameId}/runs - Run created with ID: {run.Id}");
-            return CreatedAtAction(nameof(GetRunsByGame), new { gameId }, run);
+            return CreatedAtAction(nameof(GetRun), new { gameId, runId = run.Id }, run);
         }
 
         // PATCH: api/games/1/runs/5
@@ -119,22 +109,25 @@ namespace Speedrun.Controllers
         {
             _logger.LogInformation($"[{GetType().Name}] PATCH /api/games/{gameId}/runs/{runId} - Request received");
 
-            // Log incoming update request
-            _logger.LogInformation($"[{GetType().Name}] PATCH /api/games/{gameId}/runs/{runId} - Request received");
+            // Verify game exists
+            if (_gameService.GetGameById(gameId) == null)
+            {
+                _logger.LogWarning($"[{GetType().Name}] PATCH /api/games/{gameId}/runs/{runId} - Game not found");
+                return NotFound(new { message = "Game not found" });
+            }
 
-            // Update the run (only provided fields)
-            var run = _runService.UpdateRun(runId, request.Time, request.VideoUrl, request.Notes);
-
-            // If run not found, return 404
-            if (run == null)
+            // Verify run exists and belongs to this game
+            var existingRun = _runService.GetRunById(runId);
+            if (existingRun == null || existingRun.GameId != gameId)
             {
                 _logger.LogWarning($"[{GetType().Name}] PATCH /api/games/{gameId}/runs/{runId} - Run not found");
                 return NotFound(new { message = "Run not found" });
             }
 
-            // Log successful update
+            var run = _runService.UpdateRun(runId, request.Time, request.VideoUrl, request.Notes);
+
             _logger.LogInformation($"[{GetType().Name}] PATCH /api/games/{gameId}/runs/{runId} - Run updated successfully");
-            return Ok(run);  // 200 OK with updated run
+            return Ok(run);
         }
 
 
@@ -146,6 +139,22 @@ namespace Speedrun.Controllers
         public IActionResult UpdateRunFull(int gameId, int runId, [FromBody] Run run)
         {
             _logger.LogInformation($"[{GetType().Name}] PUT /api/games/{gameId}/runs/{runId} - Request received");
+
+
+            // Verify game exists
+            if (_gameService.GetGameById(gameId) == null)
+            {
+                _logger.LogWarning($"[{GetType().Name}] PUT /api/games/{gameId}/runs/{runId} - Game not found");
+                return NotFound(new { message = "Game not found" });
+            }
+
+            // Verify run exists and belongs to this game
+            var existingRun = _runService.GetRunById(runId);
+            if (existingRun == null || existingRun.GameId != gameId)
+            {
+                _logger.LogWarning($"[{GetType().Name}] PUT /api/games/{gameId}/runs/{runId} - Run not found");
+                return NotFound(new { message = "Run not found" });
+            }
 
             // Replace the entire run
             var updated = _runService.ReplaceRun(runId, run);
@@ -169,6 +178,22 @@ namespace Speedrun.Controllers
         public IActionResult DeleteRun(int gameId, int runId)
         {
             _logger.LogInformation($"[{GetType().Name}] DELETE /api/games/{gameId}/runs/{runId} - Request received");
+
+
+            // Verify game exists
+            if (_gameService.GetGameById(gameId) == null)
+            {
+                _logger.LogWarning($"[{GetType().Name}] DELETE /api/games/{gameId}/runs/{runId} - Game not found");
+                return NotFound(new { message = "Game not found" });
+            }
+
+            // Verify run exists and belongs to this game
+            var existingRun = _runService.GetRunById(runId);
+            if (existingRun == null || existingRun.GameId != gameId)
+            {
+                _logger.LogWarning($"[{GetType().Name}] DELETE /api/games/{gameId}/runs/{runId} - Run not found");
+                return NotFound(new { message = "Run not found" });
+            }
 
             // Delete the run
             var deleted = _runService.DeleteRun(runId);
