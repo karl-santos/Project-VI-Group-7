@@ -69,7 +69,6 @@ namespace Speedrun.Controllers
         [HttpPost]
         public IActionResult CreateRun(int gameId, [FromBody] CreateRunRequest request)
         {
-
             _logger.LogInformation($"[{GetType().Name}] POST /api/games/{gameId}/runs - Request received for player: {request.PlayerName}");
 
             // Validate that game exists
@@ -80,15 +79,26 @@ namespace Speedrun.Controllers
                 return NotFound(new { message = "Game not found" });
             }
 
-
-
-            // Validate required fields are present
-            if (string.IsNullOrEmpty(request.PlayerName) || string.IsNullOrEmpty(request.Category))
+            // Validate name is present
+            if (string.IsNullOrEmpty(request.PlayerName))
             {
-                _logger.LogWarning($"[{GetType().Name}] POST /api/games/{gameId}/runs - Missing required fields");
-                return BadRequest(new { message = "PlayerName and Category are required" });
+                _logger.LogWarning($"[{GetType().Name}] POST /api/games/{gameId}/runs - Missing player name");
+                return BadRequest(new { message = "PlayerName is required" });
             }
 
+            // Validate for category
+            if (string.IsNullOrEmpty(request.Category))
+            {
+                _logger.LogWarning($"[{GetType().Name}] POST /api/games/{gameId}/runs - Missing category");
+                return BadRequest(new { message = "Category is required" });
+            }
+
+            // Validate for time
+            if (request.Time == TimeSpan.Zero)
+            {
+                _logger.LogWarning($"[{GetType().Name}] POST /api/games/{gameId}/runs - Missing time");
+                return BadRequest(new { message = "Time is required" });
+            }
 
             var run = _runService.CreateRun(
                 gameId,
