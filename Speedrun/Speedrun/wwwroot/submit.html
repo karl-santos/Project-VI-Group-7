@@ -10,60 +10,121 @@
     <main style="max-width:720px;margin:2rem auto;font-family:Arial,Helvetica,sans-serif;">
         <h1>Submit a Speedrun</h1>
 
-        <form id="runForm">
-            <label>Game ID (number)<br /><input type="number" name="gameId" id="gameId" required></label><br /><br />
-            <label>Runner name<br /><input type="text" name="runnerName" id="runnerName" required></label><br /><br />
-            <label>Category<br /><input type="text" name="category" id="category" required></label><br /><br />
-            <label>Run time (free text, e.g. "0m 34s 321ms" or "00:12:34.321")<br /><input type="text" name="runTime" id="runTime"></label><br /><br />
-            <label>Run date (YYYY-MM-DD)<br /><input type="date" name="runDate" id="runDate"></label><br /><br />
-            <label>Game version<br /><input type="text" name="gameVersion" id="gameVersion"></label><br /><br />
+        <div id="gameInfo" style="margin-bottom:1rem;padding:1rem;background:#f0f0f0;border-radius:4px;display:none;">
+            <strong>Game:</strong> <span id="gameName"></span>
+        </div>
 
-            <button type="submit">Submit run</button>
+        <div id="errorBox" style="display:none;padding:1rem;background:#fee;border:1px solid #c00;border-radius:4px;margin-bottom:1rem;color:#c00;"></div>
+
+        <form id="runForm">
+            <label>Player Name<br /><input type="text" name="playerName" id="playerName" required></label><br /><br />
+
+            <label>Category (e.g., "Any%", "100%", "Glitchless")<br /><input type="text" name="category" id="category" required></label><br /><br />
+
+            <label>
+                Run Time (HH:MM:SS format, e.g., "01:23:45")<br />
+                <input type="text" name="runTime" id="runTime" pattern="\d{2}:\d{2}:\d{2}" placeholder="01:23:45" required>
+                <small style="display:block;color:#666;margin-top:0.25rem;">Format: hours:minutes:seconds (e.g., 01:23:45)</small>
+            </label><br /><br />
+
+            <label>Video URL (optional)<br /><input type="url" name="videoUrl" id="videoUrl" placeholder="https://youtube.com/watch?v=..."></label><br /><br />
+
+            <label>Notes (optional)<br /><textarea name="notes" id="notes" rows="4" style="width:100%;font-family:inherit;" placeholder="Any additional notes about this run..."></textarea></label><br /><br />
+
+            <button type="submit" style="padding:0.75rem 1.5rem;font-size:1rem;cursor:pointer;">Submit Run</button>
+            <button type="button" id="backBtn" style="padding:0.75rem 1.5rem;font-size:1rem;cursor:pointer;margin-left:0.5rem;">Back to Leaderboard</button>
         </form>
 
         <div id="result" style="margin-top:1rem;"></div>
     </main>
 
     <script>
-    document.getElementById('runForm').addEventListener('submit', async function (e) {
-      e.preventDefault();
-      const dto = {
-        gameId: parseInt(document.getElementById('gameId').value, 10),
-        runnerName: document.getElementById('runnerName').value.trim(),
-        runCategory: document.getElementById('category').value.trim(),
-        runTime: document.getElementById('runTime').value.trim(),
-        runDate: document.getElementById('runDate').value || new Date().toISOString().slice(0,10),
-        gameVersion: document.getElementById('gameVersion').value.trim()
-      };
+        // Get gameId from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const gameId = urlParams.get('gameId');
 
-      document.getElementById('result').textContent = 'Submitting...';
+        // Validate gameId exists
+        if (!gameId) {
+            document.getElementById('errorBox').textContent = 'Error: No game ID provided in URL. Please select a game first.';
+            document.getElementById('errorBox').style.display = 'block';
+            document.getElementById('runForm').style.display = 'none';
+        } else {
+            // Optionally fetch and display game name
+            fetchGameName(gameId);
+        }
 
-      try {
-        const r = await fetch('/api/RunSubmission', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            gameId: dto.gameId,
-            RunnerName: dto.runnerName,
-            RunCategory: dto.runCategory,
-            RunTime: dto.runTime,
-            RunDate: dto.runDate,
-            GameVersion: dto.gameVersion
-          })
+        // Back button handler
+        document.getElementById('backBtn').addEventListener('click', function () {
+            window.location.href = `leaderboard.html?gameId=${gameId}`;
         });
 
-        const body = await r.json().catch(()=>({}));
-
-        if (r.status === 201 || r.ok) {
-          document.getElementById('result').innerHTML = '<strong>Saved!</strong> Run ID: ' + (body.runId || body.RunID || 'unknown');
-          document.getElementById('runForm').reset();
-        } else {
-          document.getElementById('result').innerHTML = '<strong>Error</strong>: ' + (body.message || JSON.stringify(body));
+        // Fetch game name to display
+        async function fetchGameName(id) {
+            try {
+                const response = await fetch(`/api/games/${id}`);
+                if (response.ok) {
+                    const game = await response.json();
+                    document.getElementById('gameName').textContent = game.name;
+                    document.getElementById('gameInfo').style.display = 'block';
+                }
+            } catch (err) {
+                console.error('Could not fetch game name:', err);
+            }
         }
-      } catch (err) {
-        document.getElementById('result').textContent = 'Network or server error: ' + err;
-      }
-    });
+
+        // Form submission handler
+        document.getElementById('runForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Get form values
+            const playerName = document.getElementById('playerName').value.trim();
+            const category = document.getElementById('category').value.trim();
+            const runTime = document.getElementById('runTime').value.trim();
+            const videoUrl = document.getElementById('videoUrl').value.trim();
+            const notes = document.getElementById('notes').value.trim();
+
+            // Validate time format
+            const timePattern = /^\d{2}:\d{2}:\d{2}$/;
+            if (!timePattern.test(runTime)) {
+                document.getElementById('result').innerHTML = '<strong style="color:#c00;">Error:</strong> Time must be in HH:MM:SS format (e.g., 01:23:45)';
+                return;
+            }
+
+            // Build request body
+            const requestBody = {
+                PlayerName: playerName,
+                Category: category,
+                Time: runTime,
+                VideoUrl: videoUrl || null,
+                Notes: notes || null
+            };
+
+            document.getElementById('result').textContent = 'Submitting...';
+            document.getElementById('result').style.color = '#000';
+
+            try {
+                const response = await fetch(`/api/games/${gameId}/runs`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('result').innerHTML = `
+                            <strong style="color:#080;">Success!</strong> Your run has been submitted.<br/>
+                            <a href="leaderboard.html?gameId=${gameId}" style="color:#00f;text-decoration:underline;">View Leaderboard</a> |
+                            <a href="detailview.html?gameId=${gameId}&runId=${data.id}" style="color:#00f;text-decoration:underline;">View Your Run</a>
+                        `;
+                    document.getElementById('runForm').reset();
+                } else {
+                    const errorData = await response.json().catch(() => ({}));
+                    document.getElementById('result').innerHTML = `<strong style="color:#c00;">Error:</strong> ${errorData.message || 'Failed to submit run'}`;
+                }
+            } catch (err) {
+                document.getElementById('result').innerHTML = `<strong style="color:#c00;">Network Error:</strong> ${err.message}`;
+            }
+        });
     </script>
 </body>
 </html>
