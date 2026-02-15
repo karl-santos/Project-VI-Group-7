@@ -482,3 +482,5 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+/Speedrun/Speedrun/Data/Project6.db
+/Speedrun/Speedrun/DTOs/GameDTO.cs
