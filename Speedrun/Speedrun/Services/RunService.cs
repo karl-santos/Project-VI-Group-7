@@ -26,6 +26,7 @@ namespace Speedrun.Services
 
             var runs = _context.Runs
                 .Where(r => r.GameId == gameId) // filter runs by game id
+                .ToList()
                 .OrderBy(r => r.Time)           // sort runs by time (fastest first)
                 .ToList();                      // execute query and return list
 
