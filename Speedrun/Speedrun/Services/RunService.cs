@@ -20,15 +20,16 @@ namespace Speedrun.Services
 
 
         // Get all runs for a specific game, sorted by time (fastest first)
-        public List<Run> GetRunsByGame(int gameId)
+        public List<Run> GetRunsByGame(int gameId, int page = 1, int pageSize = 50)
         {
-            _logger.LogInformation($"[{GetType().Name}] Fetching runs for game ID: {gameId}");
+            _logger.LogInformation($"[{GetType().Name}] Fetching runs for game ID: {gameId} (page {page})");
 
             var runs = _context.Runs
-                .Where(r => r.GameId == gameId) // filter runs by game id
-                .ToList()
-                .OrderBy(r => r.Time)           // sort runs by time (fastest first)
-                .ToList();                      // execute query and return list
+                .Where(r => r.GameId == gameId)
+                .OrderBy(r => r.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
             _logger.LogInformation($"[{GetType().Name}] Retrieved {runs.Count} runs for game {gameId}");
             return runs;

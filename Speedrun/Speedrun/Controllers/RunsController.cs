@@ -21,11 +21,9 @@ namespace Speedrun.Controllers
 
         // GET: api/games/1/runs
         [HttpGet]
-        public IActionResult GetRunsByGame(int gameId)
+        public IActionResult GetRunsByGame(int gameId, [FromQuery] int page = 1, [FromQuery] int pageSize = 50)
         {
-
-            _logger.LogInformation($"[{GetType().Name}] GET /api/games/{gameId}/runs - Request received");
-
+            _logger.LogInformation($"[{GetType().Name}] GET /api/games/{gameId}/runs - Request received (page {page})");
 
             var game = _gameService.GetGameById(gameId);
             if (game == null)
@@ -34,13 +32,10 @@ namespace Speedrun.Controllers
                 return NotFound(new { message = "Game not found" });
             }
 
-            var runs = _runService.GetRunsByGame(gameId);
-
+            var runs = _runService.GetRunsByGame(gameId, page, pageSize);
 
             _logger.LogInformation($"[{GetType().Name}] GET /api/games/{gameId}/runs - Returning {runs.Count} runs");
             return Ok(runs);
-
-
         }
 
 
