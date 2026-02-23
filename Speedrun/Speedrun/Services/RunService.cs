@@ -26,7 +26,7 @@ namespace Speedrun.Services
 
             var runs = _context.Runs
                 .Where(r => r.GameId == gameId)
-                .OrderBy(r => r.Id)
+                .OrderBy(r => r.TimeMs)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
