@@ -3,7 +3,10 @@ using Speedrun.Models;
 
 namespace Speedrun.Services
 {
-    // Service implementation for comment management
+    /// <summary>
+    /// Service implementation for comment management.
+    /// Handles retrieval and creation of comments on runs.
+    /// </summary>
     public class CommentService : ICommentService
     {
         private readonly SpeedrunDbContext _context;
@@ -16,7 +19,11 @@ namespace Speedrun.Services
         }
 
 
-        // Retrieves all comments for a specific run sorted by newest first
+        /// <summary>
+        /// Retrieves all comments for a specific run sorted by newest first.
+        /// </summary>
+        /// <param name="runId">The ID of the run.</param>
+        /// <returns>A list of comments sorted by newest first.</returns>
         public List<Comment> GetCommentsByRun(int runId)
         {
             _logger.LogInformation($"[{GetType().Name}] Fetching comments for run ID: {runId}");
@@ -30,7 +37,13 @@ namespace Speedrun.Services
             return comments;
         }
 
-        // Creates a new comment on a run
+        /// <summary>
+        /// Creates a new comment on a run and saves it to the database.
+        /// </summary>
+        /// <param name="runId">The ID of the run being commented on.</param>
+        /// <param name="username">The username of the commenter.</param>
+        /// <param name="content">The content of the comment.</param>
+        /// <returns>The newly created comment.</returns>
         public Comment CreateComment(int runId, string username, string content)
         {
             _logger.LogInformation($"[{GetType().Name}] Creating comment on run {runId} by user: {username}");
