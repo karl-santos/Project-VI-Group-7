@@ -69,7 +69,7 @@ namespace Speedrun.Controllers
         public IActionResult GetOptions()
         {
             _logger.LogInformation($"[{GetType().Name}] OPTIONS /api/games - Request received");
-            Response.Headers.Add("Allow", "GET, OPTIONS");
+            Response.Headers.Append("Allow", "GET, OPTIONS");
             return Ok();
         }
     }

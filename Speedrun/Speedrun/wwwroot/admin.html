@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Admin</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+    <h1>Admin Panel</h1>
+    <a href="/games.html">Back to Games</a>
+
+    <hr />
+
+    <h2>PUT — Replace Run (Full Update)</h2>
+    <p>Completely replaces all fields of an existing run.</p>
+
+    <label>Game ID<br /><input type="number" id="put-gameId" /></label><br /><br />
+    <label>Run ID<br /><input type="number" id="put-runId" /></label><br /><br />
+    <label>Player Name<br /><input type="text" id="put-playerName" /></label><br /><br />
+    <label>Category<br /><input type="text" id="put-category" placeholder="Any%, 100%, Glitchless" /></label><br /><br />
+    <label>Time (HH:MM:SS)<br /><input type="text" id="put-time" placeholder="01:23:45" /></label><br /><br />
+    <label>Video URL (optional)<br /><input type="text" id="put-videoUrl" /></label><br /><br />
+    <label>Notes (optional)<br /><input type="text" id="put-notes" /></label><br /><br />
+
+    <button id="putBtn">Send PUT Request</button>
+    <pre id="put-result"></pre>
+
+    <hr />
+
+    <h2>OPTIONS — Allowed Methods</h2>
+    <p>Checks what HTTP methods are allowed on the /api/games endpoint.</p>
+
+    <button id="optionsBtn">Send OPTIONS Request</button>
+    <pre id="options-result"></pre>
+
+    <script>
+        $('#putBtn').on('click', async function () {
+            const gameId = $('#put-gameId').val().trim();
+            const runId = $('#put-runId').val().trim();
+            const playerName = $('#put-playerName').val().trim();
+            const category = $('#put-category').val().trim();
+            const time = $('#put-time').val().trim();
+            const videoUrl = $('#put-videoUrl').val().trim();
+            const notes = $('#put-notes').val().trim();
+
+            if (!gameId || !runId || !playerName || !category || !time) {
+                $('#put-result').text('Error: Game ID, Run ID, Player Name, Category and Time are required.');
+                return;
+            }
+
+            const timePattern = /^\d{2}:\d{2}:\d{2}$/;
+            if (!timePattern.test(time)) {
+                $('#put-result').text('Error: Time must be in HH:MM:SS format (e.g. 01:23:45)');
+                return;
+            }
+
+            const body = {
+                id: parseInt(runId),
+                gameId: parseInt(gameId),
+                playerName: playerName,
+                category: category,
+                time: time,
+                videoUrl: videoUrl || null,
+                notes: notes || null
+            };
+
+            try {
+                const response = await fetch(`/api/games/${gameId}/runs/${runId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                const data = await response.json().catch(() => null);
+                $('#put-result').text(`${response.status} ${response.statusText}\n\n${JSON.stringify(data, null, 2)}`);
+            } catch (err) {
+                $('#put-result').text(`Network Error: ${err.message}`);
+            }
+        });
+
+        $('#optionsBtn').on('click', async function () {
+            try {
+                const response = await fetch('/api/games', { method: 'OPTIONS' });
+                const allowHeader = response.headers.get('Allow') || 'Not returned in response headers (check Network tab)';
+                $('#options-result').text(`${response.status} ${response.statusText}\nAllow: ${allowHeader}`);
+            } catch (err) {
+                $('#options-result').text(`Network Error: ${err.message}`);
+            }
+        });
+    </script>
+
+</body>
+</html>

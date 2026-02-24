@@ -9,45 +9,10 @@
 <body>
     <h1>Leaderboard</h1>
 
-    <script>
-
-        function showRun(runId) {
-            window.location = `detailview.html?runId=${runId}`;
-        }
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const gameId = urlParams.get('gameId');
-
-        $.ajax({
-            url: `api/games/${gameId}/runs`,
-            method: "GET",
-            success: function (data) {
-                const tbody = $("#leaderboardTable tbody");
-                tbody.empty();
-
-                data.forEach(function (run) {
-                    tbody.append(`
-        <tr onclick = "showRun(${run.id})">
-            <td>${run.playerName}</td>
-            <td>${run.time}</td>
-            <td>${run.submittedAt}</td>
-            <td>${run.category}</td>
-        </tr>
-        `);
-                });
-            },
-            error: function (err) {
-                console.error("Error:", err);
-            }
-        });</script>
-
-
-
-
     <input type="button" onclick="window.location =`submit.html?gameId=${gameId}`" value="Submit Run" />
-    <input type="button" onclick="window.location.href='games.html'" value="Back To Main Page" />    
-    <table id="leaderboardTable" class="leaderTable">
+    <input type="button" onclick="window.location.href='games.html'" value="Back To Main Page" />
 
+    <table id="leaderboardTable" class="leaderTable">
         <thead>
             <tr>
                 <th>Player Name</th>
@@ -60,5 +25,62 @@
         </tbody>
     </table>
 
+    <br />
+    <input type="button" id="prevBtn" value="Previous" disabled />
+    <span id="pageLabel">Page 1</span>
+    <input type="button" id="nextBtn" value="Next" />
+
+    <script>
+        function showRun(runId) {
+            window.location = `detailview.html?runId=${runId}`;
+        }
+
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const gameId = urlParams.get('gameId');
+
+        const pageSize = 10;
+        let currentPage = 1;
+
+        function loadRuns(page) {
+            $.ajax({
+                url: `api/games/${gameId}/runs?page=${page}&pageSize=${pageSize}`,
+                method: "GET",
+                success: function (data) {
+                    const tbody = $("#leaderboardTable tbody");
+                    tbody.empty();
+
+                    data.forEach(function (run) {
+                        tbody.append(`
+                                <tr onclick="showRun(${run.id})">
+                                    <td>${run.playerName}</td>
+                                    <td>${run.time}</td>
+                                    <td>${run.submittedAt}</td>
+                                    <td>${run.category}</td>
+                                </tr>
+                            `);
+                    });
+
+                    currentPage = page;
+                    $('#pageLabel').text(`Page ${currentPage}`);
+                    $('#prevBtn').prop('disabled', currentPage === 1);
+                    $('#nextBtn').prop('disabled', data.length < pageSize);
+                },
+                error: function (err) {
+                    console.error("Error:", err);
+                }
+            });
+        }
+
+        $('#prevBtn').on('click', function () {
+            if (currentPage > 1) loadRuns(currentPage - 1);
+        });
+
+        $('#nextBtn').on('click', function () {
+            loadRuns(currentPage + 1);
+        });
+
+        loadRuns(1);
+    </script>
 </body>
 </html>
