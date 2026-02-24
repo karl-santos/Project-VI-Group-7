@@ -1,0 +1,17 @@
+var searchData=
+[
+  ['game_0',['Game',['../class_speedrun_1_1_models_1_1_run.html#afa14d40cd351325a2f29862e1c652328',1,'Speedrun.Models.Run.Game'],['../class_speedrun_1_1_models_1_1_game.html',1,'Speedrun.Models.Game']]],
+  ['gamecontroller_1',['GameController',['../class_speedrun_1_1_controllers_1_1_game_controller.html',1,'Speedrun::Controllers']]],
+  ['gameid_2',['GameId',['../class_speedrun_1_1_models_1_1_run.html#a87c0ceeac8337e6696b32254f744768c',1,'Speedrun::Models::Run']]],
+  ['gameimageurl_3',['GameImageUrl',['../class_speedrun_1_1_models_1_1_game.html#ab07a7bf8d9c070f73aa5bb39856822f2',1,'Speedrun::Models::Game']]],
+  ['games_4',['Games',['../class_speedrun_1_1_data_1_1_speedrun_db_context.html#a9b4bd1f210f03fe8e8f9e500a3a31fbf',1,'Speedrun::Data::SpeedrunDbContext']]],
+  ['gameservice_5',['GameService',['../class_speedrun_1_1_services_1_1_game_service.html',1,'Speedrun::Services']]],
+  ['getallgames_6',['GetAllGames',['../class_speedrun_1_1_controllers_1_1_game_controller.html#a658a84bf56e00fdb185ad43e2fd9f20e',1,'Speedrun.Controllers.GameController.GetAllGames()'],['../class_speedrun_1_1_services_1_1_game_service.html#ac78c0016974551a796f6e9828f1af748',1,'Speedrun.Services.GameService.GetAllGames()'],['../interface_speedrun_1_1_services_1_1_i_game_service.html#aa43e677f4be152b501f1919cf8060e08',1,'Speedrun.Services.IGameService.GetAllGames()']]],
+  ['getcomments_7',['GetComments',['../class_speedrun_1_1_controllers_1_1_comments_controller.html#a28962e9c215221df3929fe49b94e8a7d',1,'Speedrun::Controllers::CommentsController']]],
+  ['getcommentsbyrun_8',['GetCommentsByRun',['../class_speedrun_1_1_services_1_1_comment_service.html#a4ad334133678fd151c52607b6add2b37',1,'Speedrun.Services.CommentService.GetCommentsByRun()'],['../interface_speedrun_1_1_services_1_1_i_comment_service.html#af6d715ae6594b66123b6e5d360f49638',1,'Speedrun.Services.ICommentService.GetCommentsByRun()']]],
+  ['getgamebyid_9',['GetGameById',['../class_speedrun_1_1_controllers_1_1_game_controller.html#a27254fdcdba984bee01b9b7aacb6563e',1,'Speedrun.Controllers.GameController.GetGameById()'],['../class_speedrun_1_1_services_1_1_game_service.html#a8d9d47e4d13f4dcb25b67cf69b248022',1,'Speedrun.Services.GameService.GetGameById()'],['../interface_speedrun_1_1_services_1_1_i_game_service.html#a7be41be4eeede2cbb4d6455e9c12d140',1,'Speedrun.Services.IGameService.GetGameById()']]],
+  ['getoptions_10',['GetOptions',['../class_speedrun_1_1_controllers_1_1_game_controller.html#ab5b6f310b8d5d078280fc24ed0231beb',1,'Speedrun::Controllers::GameController']]],
+  ['getrun_11',['GetRun',['../class_speedrun_1_1_controllers_1_1_runs_controller.html#a6259feb5d6f77623b12dfdb2e031b46a',1,'Speedrun::Controllers::RunsController']]],
+  ['getrunbyid_12',['GetRunById',['../interface_speedrun_1_1_services_1_1_i_run_service.html#a6c0c01ffde1bf98a03b985d2986dc0c3',1,'Speedrun.Services.IRunService.GetRunById()'],['../class_speedrun_1_1_services_1_1_run_service.html#aefaa1c1a0ed3eddaa39271a9cfd3addc',1,'Speedrun.Services.RunService.GetRunById()']]],
+  ['getrunsbygame_13',['GetRunsByGame',['../class_speedrun_1_1_controllers_1_1_runs_controller.html#af6357d4e80e6d4c6fa2d8e0ac4657aa8',1,'Speedrun.Controllers.RunsController.GetRunsByGame()'],['../interface_speedrun_1_1_services_1_1_i_run_service.html#a005355ada1abeccd8416f73afef7c105',1,'Speedrun.Services.IRunService.GetRunsByGame()'],['../class_speedrun_1_1_services_1_1_run_service.html#adf6997d3a75481eb0a543dfed365858a',1,'Speedrun.Services.RunService.GetRunsByGame()']]]
+];
