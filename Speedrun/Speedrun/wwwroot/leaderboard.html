@@ -14,37 +14,38 @@
         function showRun(runId) {
             window.location = `detailview.html?runId=${runId}`;
         }
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const gameId = urlParams.get('gameId'); 
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const gameId = urlParams.get('gameId');
 
-    $.ajax({
-    url: `api/games/${gameId}/runs`,
-    method: "GET",
-    success: function (data) {
-    const tbody = $("#leaderboardTable tbody");
-    tbody.empty();
+        $.ajax({
+            url: `api/games/${gameId}/runs`,
+            method: "GET",
+            success: function (data) {
+                const tbody = $("#leaderboardTable tbody");
+                tbody.empty();
 
-    data.forEach(function(run) {
-    tbody.append(`
-    <tr onclick = "showRun(${run.id})">
-        <td>${run.playerName}</td>
-        <td>${run.time}</td>
-        <td>${run.submittedAt}</td>
-        <td>${run.category}</td>
-    </tr>
-    `);
-    });
-    },
-    error: function (err) {
-    console.error("Error:", err);
-    }
-    });</script>
+                data.forEach(function (run) {
+                    tbody.append(`
+        <tr onclick = "showRun(${run.id})">
+            <td>${run.playerName}</td>
+            <td>${run.time}</td>
+            <td>${run.submittedAt}</td>
+            <td>${run.category}</td>
+        </tr>
+        `);
+                });
+            },
+            error: function (err) {
+                console.error("Error:", err);
+            }
+        });</script>
 
 
 
 
     <input type="button" onclick="window.location =`submit.html?gameId=${gameId}`" value="Submit Run" />
+    <input type="button" onclick="window.location.href='games.html'" value="Back To Main Page" />    
     <table id="leaderboardTable" class="leaderTable">
 
         <thead>
