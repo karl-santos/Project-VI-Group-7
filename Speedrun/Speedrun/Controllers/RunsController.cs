@@ -4,6 +4,10 @@ using Speedrun.Models;
 
 namespace Speedrun.Controllers
 {
+    /// <summary>
+    /// API Controller for speedrun management operations.
+    /// Handles CRUD operations for run submissions.
+    /// </summary>
     [ApiController]
     [Route("api/games/{gameId}/runs")]
     public class RunsController : ControllerBase
@@ -19,7 +23,13 @@ namespace Speedrun.Controllers
             _logger = logger;
         }
 
-        // GET: api/games/1/runs
+        /// <summary>
+        /// Retrieves all runs for a specific game sorted by time ascending.
+        /// </summary>
+        /// <param name="gameId">The ID of the game.</param>
+        /// <param name="page">The page number for pagination.</param>
+        /// <param name="pageSize">The number of runs per page.</param>
+        /// <returns>A list of runs with a 200 OK response.</returns>
         [HttpGet]
         public IActionResult GetRunsByGame(int gameId, [FromQuery] int page = 1, [FromQuery] int pageSize = 50)
         {
@@ -39,7 +49,12 @@ namespace Speedrun.Controllers
         }
 
 
-        // GET: api/games/1/runs/1
+        /// <summary>
+        /// Retrieves a specific run by its ID.
+        /// </summary>
+        /// <param name="gameId">The ID of the game.</param>
+        /// <param name="runId">The ID of the run.</param>
+        /// <returns>The run if found, 404 Not Found otherwise.</returns>
         [HttpGet("{runId}")]
         public IActionResult GetRun(int gameId, int runId)
         {
@@ -60,7 +75,12 @@ namespace Speedrun.Controllers
 
 
 
-        // POST: api/games/1/runs
+        /// <summary>
+        /// Creates a new speedrun submission.
+        /// </summary>
+        /// <param name="gameId">The ID of the game being run.</param>
+        /// <param name="request">The run data to create.</param>
+        /// <returns>201 Created with the new run, 404 if game not found.</returns>
         [HttpPost]
         public IActionResult CreateRun(int gameId, [FromBody] CreateRunRequest request)
         {
@@ -98,7 +118,13 @@ namespace Speedrun.Controllers
             return CreatedAtAction(nameof(GetRun), new { gameId, runId = run.Id }, run);
         }
 
-        // PATCH: api/games/1/runs/5
+        /// <summary>
+        /// Partially updates an existing run.
+        /// </summary>
+        /// <param name="gameId">The ID of the game.</param>
+        /// <param name="runId">The ID of the run to update.</param>
+        /// <param name="request">The fields to update.</param>
+        /// <returns>200 OK with updated run, 404 if not found.</returns>
         [HttpPatch("{runId}")]
         public IActionResult UpdateRunPartial(int gameId, int runId, [FromBody] UpdateRunRequest request)
         {
@@ -129,7 +155,13 @@ namespace Speedrun.Controllers
 
 
 
-        // PUT: api/games/1/runs/5
+        /// <summary>
+        /// Completely replaces an existing run with new data.
+        /// </summary>
+        /// <param name="gameId">The ID of the game.</param>
+        /// <param name="runId">The ID of the run to replace.</param>
+        /// <param name="run">The new run data.</param>
+        /// <returns>200 OK with replaced run, 404 if not found.</returns>
         [HttpPut("{runId}")]
         public IActionResult UpdateRunFull(int gameId, int runId, [FromBody] Run run)
         {
@@ -168,7 +200,12 @@ namespace Speedrun.Controllers
 
 
 
-        // DELETE: api/games/1/runs/5
+        /// <summary>
+        /// Deletes a run from the system.
+        /// </summary>
+        /// <param name="gameId">The ID of the game.</param>
+        /// <param name="runId">The ID of the run to delete.</param>
+        /// <returns>204 No Content if deleted, 404 if not found.</returns>
         [HttpDelete("{runId}")]
         public IActionResult DeleteRun(int gameId, int runId)
         {
@@ -206,20 +243,40 @@ namespace Speedrun.Controllers
         }
     }
 
-    // Request models
+    /// <summary>
+    /// Request model for creating a new speedrun submission.
+    /// </summary>
     public class CreateRunRequest
     {
+        /// <summary>The name of the player submitting the run.</summary>
         public string PlayerName { get; set; } = string.Empty;
+
+        /// <summary>The category of the run e.g. Any% or 100%.</summary>
         public string Category { get; set; } = string.Empty;
+
+        /// <summary>The completion time of the run.</summary>
         public TimeSpan Time { get; set; }
+
+        /// <summary>Optional URL to the run video.</summary>
         public string? VideoUrl { get; set; }
+
+        /// <summary>Optional notes about the run.</summary>
         public string? Notes { get; set; }
     }
 
+    /// <summary>
+    /// Request model for partially updating an existing run.
+    /// Only provided fields will be updated.
+    /// </summary>
     public class UpdateRunRequest
     {
+        /// <summary>Optional new completion time.</summary>
         public TimeSpan? Time { get; set; }
+
+        /// <summary>Optional new video URL.</summary>
         public string? VideoUrl { get; set; }
+
+        /// <summary>Optional new notes.</summary>
         public string? Notes { get; set; }
     }
 }
