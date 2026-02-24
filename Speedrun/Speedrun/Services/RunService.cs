@@ -5,8 +5,10 @@ using Speedrun.Models;
 namespace Speedrun.Services
 {
 
-    // Service implementation for speedrun management
-    // Handles all business logic for run submissions
+    /// <summary>
+    /// Service implementation for speedrun management.
+    /// Handles all CRUD operations for run submissions.
+    /// </summary>
     public class RunService : IRunService
     {
 
@@ -19,7 +21,13 @@ namespace Speedrun.Services
         }
 
 
-        // Get all runs for a specific game, sorted by time (fastest first)
+        /// <summary>
+        /// Gets all runs for a specific game sorted by time ascending.
+        /// </summary>
+        /// <param name="gameId">The ID of the game.</param>
+        /// <param name="page">The page number for pagination.</param>
+        /// <param name="pageSize">The number of runs per page.</param>
+        /// <returns>A sorted list of runs for the given game.</returns>
         public List<Run> GetRunsByGame(int gameId, int page = 1, int pageSize = 50)
         {
             _logger.LogInformation($"[{GetType().Name}] Fetching runs for game ID: {gameId} (page {page})");
@@ -36,7 +44,12 @@ namespace Speedrun.Services
         }
 
 
-        // Get a single run by ID
+
+        /// <summary>
+        /// Gets a single run by its ID.
+        /// </summary>
+        /// <param name="id">The unique identifier of the run.</param>
+        /// <returns>The run if found, null otherwise.</returns>
         public Run? GetRunById(int id)
         {
 
@@ -57,7 +70,18 @@ namespace Speedrun.Services
  
         }
 
-        // Create a new run and save it to the database
+
+
+        /// <summary>
+        /// Creates a new speedrun submission and saves it to the database.
+        /// </summary>
+        /// <param name="gameId">The ID of the game being run.</param>
+        /// <param name="playerName">The name of the player.</param>
+        /// <param name="category">The run category e.g. Any% or 100%.</param>
+        /// <param name="time">The completion time of the run.</param>
+        /// <param name="videoUrl">Optional URL to the run video.</param>
+        /// <param name="notes">Optional notes about the run.</param>
+        /// <returns>The newly created run.</returns>
         public Run CreateRun(int gameId, string playerName, string category, TimeSpan time, string? videoUrl, string? notes)
         {
 
@@ -85,8 +109,17 @@ namespace Speedrun.Services
             return run; 
         }
 
-        // Partially updates a run (PATCH)
-        // Only modifies fields that are provided (non-null)
+
+
+
+        /// <summary>
+        /// Partially updates a run, only modifying fields that are provided.
+        /// </summary>
+        /// <param name="id">The ID of the run to update.</param>
+        /// <param name="time">Optional new time value.</param>
+        /// <param name="videoUrl">Optional new video URL.</param>
+        /// <param name="notes">Optional new notes.</param>
+        /// <returns>The updated run if found, null otherwise.</returns>
         public Run? UpdateRun(int id, TimeSpan? time, string? videoUrl, string? notes)
         {
 
@@ -108,7 +141,15 @@ namespace Speedrun.Services
             return run;
         }
 
-        // Completely replaces a run with new data (PUT)
+
+
+
+        /// <summary>
+        /// Completely replaces a run with new data.
+        /// </summary>
+        /// <param name="id">The ID of the run to replace.</param>
+        /// <param name="updatedRun">The new run data.</param>
+        /// <returns>The replaced run if found, null otherwise.</returns>
         public Run? ReplaceRun(int id, Run updatedRun)
         {
 
@@ -134,7 +175,11 @@ namespace Speedrun.Services
             return run;
         }
 
-        // Removes a run from the system
+        /// <summary>
+        /// Deletes a run from the database.
+        /// </summary>
+        /// <param name="id">The ID of the run to delete.</param>
+        /// <returns>True if deleted, false if not found.</returns>
         public bool DeleteRun(int id)
         {
             _logger.LogInformation($"[{GetType().Name}] Attempting to delete run ID: {id}");

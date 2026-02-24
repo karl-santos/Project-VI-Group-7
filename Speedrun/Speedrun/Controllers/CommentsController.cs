@@ -3,6 +3,10 @@ using Speedrun.Services;
 
 namespace Speedrun.Controllers
 {
+    /// <summary>
+    /// API Controller for comment management operations.
+    /// Handles retrieval and creation of comments on runs.
+    /// </summary>
     [ApiController]
     [Route("api/games/{gameId}/runs/{runId}/comments")]
     public class CommentsController : ControllerBase
@@ -18,7 +22,12 @@ namespace Speedrun.Controllers
             _logger = logger;
         }
 
-        // GET: api/games/1/runs/5/comments
+        /// <summary>
+        /// Retrieves all comments for a specific run sorted by newest first.
+        /// </summary>
+        /// <param name="gameId">The ID of the game.</param>
+        /// <param name="runId">The ID of the run.</param>
+        /// <returns>A list of comments with a 200 OK response, 404 if run not found.</returns>
         [HttpGet]
         public IActionResult GetComments(int gameId, int runId)
         {
@@ -44,7 +53,13 @@ namespace Speedrun.Controllers
 
 
 
-        // POST: api/games/1/runs/5/comments
+        /// <summary>
+        /// Creates a new comment on a run.
+        /// </summary>
+        /// <param name="gameId">The ID of the game.</param>
+        /// <param name="runId">The ID of the run being commented on.</param>
+        /// <param name="request">The comment data including username and content.</param>
+        /// <returns>201 Created with the new comment, 404 if run not found.</returns>
         [HttpPost]
         public IActionResult CreateComment(int gameId, int runId, [FromBody] CreateCommentRequest request)
         {
@@ -77,10 +92,15 @@ namespace Speedrun.Controllers
 
 
 
-    // comment request
+    /// <summary>
+    /// Request model for creating a new comment on a run.
+    /// </summary>
     public class CreateCommentRequest
     {
+        /// <summary>The username of the commenter.</summary>
         public string Username { get; set; } = string.Empty;
+
+        /// <summary>The content of the comment.</summary>
         public string Content { get; set; } = string.Empty;
     }
 }

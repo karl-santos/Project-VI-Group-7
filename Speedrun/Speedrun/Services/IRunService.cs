@@ -2,30 +2,39 @@
 
 namespace Speedrun.Services
 {
-    // Interface for speedrun management operations
-    // Handles CRUD operations for run submissions
+    /// <summary>
+    /// Interface for speedrun management operations.
+    /// </summary>
     public interface IRunService
     {
-        // Gets all runs for a specific game, sorted by time (fastest first)
+        /// <summary>
+        /// Gets all runs for a specific game sorted by time ascending.
+        /// </summary>
         List<Run> GetRunsByGame(int gameId, int page = 1, int pageSize = 50);
 
-        // Retrieves a single run by its ID
+        /// <summary>
+        /// Gets a single run by its ID.
+        /// </summary>
         Run? GetRunById(int id);
 
-
-        // Creates a new speedrun submission
+        /// <summary>
+        /// Creates a new speedrun submission.
+        /// </summary>
         Run CreateRun(int gameId, string playerName, string category, TimeSpan time, string? videoUrl, string? notes);
 
-
-        // Partially updates an existing run (PATCH operation)
-        // Only updates fields that are provided
+        /// <summary>
+        /// Partially updates an existing run.
+        /// </summary>
         Run? UpdateRun(int id, TimeSpan? time, string? videoUrl, string? notes);
 
-
-        // Completely replaces a run with new data (PUT operation)
+        /// <summary>
+        /// Completely replaces a run with new data.
+        /// </summary>
         Run? ReplaceRun(int id, Run run);
 
-        // Deletes a run from the system
+        /// <summary>
+        /// Deletes a run from the system.
+        /// </summary>
         bool DeleteRun(int id);
     }
 }

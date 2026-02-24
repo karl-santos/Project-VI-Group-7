@@ -2,7 +2,10 @@
 using Speedrun.Models;
 namespace Speedrun.Services
 {
-    // Service implementation for game management
+    /// <summary>
+    /// Service implementation for game management.
+    /// Handles retrieval of game data from the database.
+    /// </summary>
     public class GameService : IGameService
     {
         private readonly SpeedrunDbContext _context;
@@ -13,7 +16,10 @@ namespace Speedrun.Services
             _logger = logger;
         }
 
-        // Returns all games available for speedrunning
+        /// <summary>
+        /// Returns all games available for speedrunning.
+        /// </summary>
+        /// <returns>A list of all games in the database.</returns>
         public List<Game> GetAllGames()
         {
             _logger.LogInformation($"[{GetType().Name}] Fetching all games from database");
@@ -25,7 +31,11 @@ namespace Speedrun.Services
             return games;
         }
 
-        // Finds a specific game by Id. Returns null if not found
+        /// <summary>
+        /// Finds a specific game by its ID.
+        /// </summary>
+        /// <param name="id">The unique identifier of the game.</param>
+        /// <returns>The game if found, null otherwise.</returns>
         public Game? GetGameById(int id)
         {
             _logger.LogInformation($"[{GetType().Name}] Fetching game with ID: {id}");

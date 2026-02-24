@@ -4,23 +4,39 @@ using Speedrun.Models;
 namespace Speedrun.Data
 {
 
-    // Manages the connection to SQLite and defines tables
+    /// <summary>
+    /// Manages the database connection and defines the tables for the speedrun application.
+    /// </summary>
     public class SpeedrunDbContext : DbContext
     {
+
+        /// <summary>
+        /// Initializes a new instance of SpeedrunDbContext with the given options.
+        /// </summary>
+        /// <param name="options">The options to configure the database context.</param>
         public SpeedrunDbContext(DbContextOptions<SpeedrunDbContext> options)
             : base(options) 
         {
         }
 
         // Tables
+
+        /// <summary>Table representing all games available for speedrunning.</summary>
         public DbSet<Game> Games { get; set; }
+
+        /// <summary>Table representing all speedrun submissions.</summary>
         public DbSet<Run> Runs { get; set; }
+
+        /// <summary>Table representing all comments on speedrun submissions.</summary>
         public DbSet<Comment> Comments { get; set; }
 
 
 
 
-        // Configure relationships and constraints
+        /// <summary>
+        /// Configures entity relationships, constraints, indexes, and seeds initial game data.
+        /// </summary>
+        /// <param name="modelBuilder">The builder used to configure the database model.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configure Game entity

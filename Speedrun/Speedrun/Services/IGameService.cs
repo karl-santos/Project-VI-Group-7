@@ -2,11 +2,22 @@
 
 namespace Speedrun.Services
 {
-    // interface for game related operations
-    // handles retrieval of game data
+    /// <summary>
+    /// Interface for game related operations.
+    /// </summary>
     public interface IGameService
     {
-        List<Game> GetAllGames(); // Retrieves all available games in the system
-        Game? GetGameById(int id); // gets a game by its unique identifier, returns null if not found
+        /// <summary>
+        /// Retrieves all available games in the system.
+        /// </summary>
+        List<Game> GetAllGames();
+
+
+        /// <summary>
+        /// Gets a game by its unique identifier.
+        /// </summary>
+        /// <param name="id">The unique identifier of the game.</param>
+        /// <returns>The game if found, null otherwise.</returns>
+        Game? GetGameById(int id);
     }
 }

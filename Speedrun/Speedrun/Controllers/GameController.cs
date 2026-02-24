@@ -6,9 +6,10 @@ using Speedrun.Services;
 namespace Speedrun.Controllers
 {
 
-    // API Controller for game-related operations
-    // Handles requests for viewing available games
-    // Base route: /api/games
+    /// <summary>
+    /// API Controller for game related operations.
+    /// Handles requests for viewing available games.
+    /// </summary>
     [ApiController]
     [Route("api/games")]
     public class GameController : ControllerBase
@@ -24,7 +25,10 @@ namespace Speedrun.Controllers
         }
 
 
-        // GET: api/games
+        /// <summary>
+        /// Retrieves all available games.
+        /// </summary>
+        /// <returns>A list of all games with a 200 OK response.</returns>
         [HttpGet]
         [ResponseCache(Duration = 60)]
         public IActionResult GetAllGames()
@@ -37,7 +41,11 @@ namespace Speedrun.Controllers
             return Ok(games);
         }
 
-        // GET: api/games/1
+        /// <summary>
+        /// Retrieves a specific game by its ID.
+        /// </summary>
+        /// <param name="gameId">The unique identifier of the game.</param>
+        /// <returns>The game if found, 404 Not Found otherwise.</returns>
         [HttpGet("{gameId}")]
         public IActionResult GetGameById(int gameId)
         {
@@ -53,7 +61,10 @@ namespace Speedrun.Controllers
             return Ok(game);
         }
 
-        // OPTIONS: api/games
+        /// <summary>
+        /// Returns the allowed HTTP methods for the games endpoint.
+        /// </summary>
+        /// <returns>200 OK with Allow header set to GET and OPTIONS.</returns>
         [HttpOptions]
         public IActionResult GetOptions()
         {
