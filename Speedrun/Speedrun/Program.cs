@@ -32,6 +32,7 @@ builder.Services.AddDbContext<SpeedrunDbContext>(options =>
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IRunService, RunService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddResponseCaching();
 
 
 
@@ -73,6 +74,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAll");
+app.UseResponseCaching();
 //app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

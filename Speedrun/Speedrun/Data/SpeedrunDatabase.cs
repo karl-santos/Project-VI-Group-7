@@ -52,6 +52,11 @@ namespace Speedrun.Data
                 .HasForeignKey(c => c.RunId);   // RunId is the foreign key
 
 
+            modelBuilder.Entity<Run>()
+            .HasIndex(r => r.GameId);
+
+            modelBuilder.Entity<Comment>()
+                .HasIndex(c => c.RunId);
 
             // Seed initial data
             modelBuilder.Entity<Game>().HasData(

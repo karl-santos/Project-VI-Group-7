@@ -26,6 +26,7 @@ namespace Speedrun.Controllers
 
         // GET: api/games
         [HttpGet]
+        [ResponseCache(Duration = 60)]
         public IActionResult GetAllGames()
         {
             _logger.LogInformation($"[{GetType().Name}] GET /api/games - Request received");

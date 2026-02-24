@@ -7,7 +7,7 @@ namespace Speedrun.Services
     public interface IRunService
     {
         // Gets all runs for a specific game, sorted by time (fastest first)
-        List<Run> GetRunsByGame(int gameId);
+        List<Run> GetRunsByGame(int gameId, int page = 1, int pageSize = 50);
 
         // Retrieves a single run by its ID
         Run? GetRunById(int id);
