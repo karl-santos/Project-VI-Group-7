@@ -28,7 +28,7 @@ function isValidTime(s) {
 
 //if id is known, go back to leaderboard, otherwose go to the games page
 function setBackLink() {
-    if (gameId) $("#backLink").attr("href", `Leaderboard.html?gameId=${gameId}`);
+    if (gameId) $("#backLink").attr("href", `leaderboard.html?gameId=${gameId}`);
     else $("#backLink").attr("href", `/games.html`);
 }
 
