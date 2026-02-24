@@ -219,7 +219,7 @@ $("#deleteBtn").on("click", function () {
         url: `/api/games/${gameId}/runs/${runId}`,
         method: "DELETE",
         success: function () {
-            window.location = `Leaderboard.html?gameId=${gameId}`;
+            window.location = `leaderboard.html?gameId=${gameId}`;
         },
         error: function (xhr) {
             showError(xhr.responseText || "Delete failed.");
